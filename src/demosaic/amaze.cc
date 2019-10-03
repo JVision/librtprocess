@@ -198,7 +198,11 @@ rpError amaze_demosaic(int raw_width, int raw_height, int winx, int winy, int wi
             // Main algorithm: Tile loop
             // use collapse(2) to collapse the 2 loops to one large loop, so there is better scaling
 #ifdef _OPENMP
-            #pragma omp for schedule(dynamic, chunkSize) collapse(2) nowait
+#if defined(_MSC_VER) && defined(WIN32) 
+#pragma omp parallel for
+#else
+#pragma omp for schedule(dynamic, chunkSize) collapse(2) nowait
+#endif
 #endif
 
             for (int top = winy - 16; top < winy + height; top += ts - 32) {

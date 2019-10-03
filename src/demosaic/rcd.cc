@@ -88,7 +88,11 @@ rpError rcd_demosaic(int width, int height, const float * const *rawData, float 
 #endif
     if (!rc) {
 #ifdef _OPENMP
-        #pragma omp for schedule(dynamic, chunkSize) collapse(2) nowait
+#if !defined(_MSC_VER) || _MSC_VER>1920
+#pragma omp for schedule(dynamic, chunkSize) collapse(2) nowait
+#else
+#pragma omp for
+#endif
 #endif
         for(int tr = 0; tr < numTh; ++tr) {
             for(int tc = 0; tc < numTw; ++tc) {

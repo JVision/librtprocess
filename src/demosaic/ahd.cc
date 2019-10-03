@@ -100,7 +100,11 @@ rpError ahd_demosaic(int width, int height, const float * const *rawData, float 
         auto homo = (uint16_t(*)[TS][TS])(buffer + 12 * TS * TS);
 
 #ifdef _OPENMP
+#if defined(_MSC_VER) && defined(WIN32) 
+	#pragma omp parallel for
+#else
         #pragma omp for collapse(2) schedule(dynamic) nowait
+#endif
 #endif
         for (int top = 2; top < height - 5; top += TS - 6) {
             for (int left = 2; left < width - 5; left += TS - 6) {

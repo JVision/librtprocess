@@ -305,7 +305,11 @@ rpError CA_correct(
                     float   blockavethr[2][2] = {{0, 0}, {0, 0}}, blocksqavethr[2][2] = {{0, 0}, {0, 0}}, blockdenomthr[2][2] = {{0, 0}, {0, 0}};
 
 #ifdef _OPENMP
-                    #pragma omp for collapse(2) schedule(dynamic, chunkSize) nowait
+#if !defined(_MSC_VER) || _MSC_VER>1920
+#pragma omp for collapse(2) schedule(dynamic, chunkSize) nowait
+#else
+#pragma omp for
+#endif
 #endif
                     for (int top = -border ; top < height; top += ts - border2)
                         for (int left = -border; left < width - (W & 1); left += ts - border2) {
@@ -845,7 +849,11 @@ rpError CA_correct(
                     //green interpolated to optical sample points for R/B
                     float *gshift  = data + 2 * ts * ts + ts * tsh + 64; // there is no overlap in buffer usage => share
 #ifdef _OPENMP
+#if !defined(_MSC_VER) || _MSC_VER>1920
                     #pragma omp for schedule(dynamic, chunkSize) collapse(2) nowait
+#else
+					#pragma omp for
+#endif
 #endif
                     for (int top = winy-border; top < winy+winh; top += ts - border2)
                       for (int left = winx-border; left < winx+winw; left += ts - border2) {

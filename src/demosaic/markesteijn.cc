@@ -259,7 +259,11 @@ rpError markesteijn_demosaic (int width, int height, const float * const *rawDat
             uint8_t (*homosummax)[ts] = (uint8_t (*)[ts]) homo[ndir - 1]; // we can reuse the homo-buffer because they are not used together
 
 #ifdef _OPENMP
+#if !defined(_MSC_VER) || _MSC_VER>1920
             #pragma omp for collapse(2) schedule(dynamic, chunkSize) nowait
+#else
+		#pragma omp for
+#endif
 #endif
 
             for (int top = 3; top < height - 19; top += ts - 16)
@@ -620,7 +624,11 @@ rpError markesteijn_demosaic (int width, int height, const float * const *rawDat
 
                             for (int row = 5; row < mrow - 5; row++)
 #ifdef _OPENMP
-                                #pragma omp simd
+#if !defined(_MSC_VER) || _MSC_VER>1920
+#pragma omp simd
+#else
+#endif
+
 #endif
                                 for (int col = 5; col < mcol - 5; col++) {
                                     float *ll = &lab[0][row - 4][col - 4];

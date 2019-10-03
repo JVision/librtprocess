@@ -21,6 +21,11 @@
 #define _LIBRTPROCESS_
 
 #include <functional>
+#ifdef WIN32
+#define NOMINMAX
+#undef min
+#undef max
+#endif
 
 
 enum rpError {RP_NO_ERROR, RP_MEMORY_ERROR, RP_WRONG_CFA, RP_CACORRECT_ERROR};

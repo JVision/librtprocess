@@ -55,7 +55,9 @@ rpError hphd_vertical(const float * const *rawData, float** hpmap, int col_from,
     for (; k < col_to - 7; k += numCols) {
         for (int i = 5; i < H - 5; i++) {
 #ifdef _OPENMP
+#if !defined( _MSC_VER) || _MSC_VER>1920
             #pragma omp simd
+#endif
 #endif
             for(int h = 0; h < numCols; ++h) {
                 temp[i][h] = std::fabs((rawData[i - 5][k + h] - rawData[i + 5][k + h])  - 8 * (rawData[i - 4][k + h] - rawData[i + 4][k + h]) + 27 * (rawData[i - 3][k + h] - rawData[i + 3][k + h]) - 48 * (rawData[i - 2][k + h] - rawData[i + 2][k + h]) + 42 * (rawData[i - 1][k + h] - rawData[i + 1][k + h]));
@@ -73,7 +75,9 @@ rpError hphd_vertical(const float * const *rawData, float** hpmap, int col_from,
             STVFU(dev[j][4], vmaxf(epsv, (SQRV(LVFU(temp[j - 4][4]) - avgL2) + SQRV(LVFU(temp[j - 3][4]) - avgL2)) + (SQRV(LVFU(temp[j - 2][4]) - avgL2) + SQRV(LVFU(temp[j - 1][4]) - avgL2)) + (SQRV(LVFU(temp[j][4]) - avgL2) + SQRV(LVFU(temp[j + 1][4]) - avgL2)) + (SQRV(LVFU(temp[j + 2][4]) - avgL2) + SQRV(LVFU(temp[j + 3][4]) - avgL2)) + SQRV(LVFU(temp[j + 4][4]) - avgL2)));
 #else
 #ifdef _OPENMP
-            #pragma omp simd
+#if !defined(_MSC_VER) || _MSC_VER>1920
+#pragma omp simd
+#endif
 #endif
             for(int h = 0; h < numCols; ++h) {
                 const float avgL = ((temp[j - 4][h] + temp[j - 3][h]) + (temp[j - 2][h] + temp[j - 1][h]) + (temp[j][h] + temp[j + 1][h]) + (temp[j + 2][h] + temp[j + 3][h]) + temp[j + 4][h]) / 9.f;
@@ -85,7 +89,9 @@ rpError hphd_vertical(const float * const *rawData, float** hpmap, int col_from,
 
         for (int j = 5; j < H - 5; j++) {
 #ifdef _OPENMP
-            #pragma omp simd
+#if !defined(_MSC_VER) || _MSC_VER>1920
+#pragma omp simd
+#endif
 #endif
             for(int h = 0; h < numCols; ++h) {
                 const float avgL = avg[j - 1][h];
@@ -138,14 +144,19 @@ rpError hphd_horizontal(const float * const *rawData, float** hpmap, int row_fro
 #endif
         for (int i = row_from; i < row_to; i++) {
 #ifdef _OPENMP
+
+#if !defined(_MSC_VER) || _MSC_VER>1920
             #pragma omp simd
+#endif
 #endif
             for (int j = 5; j < W - 5; j++) {
                 temp[j] = std::fabs((rawData[i][j - 5] - rawData[i][j + 5]) - 8 * (rawData[i][j - 4] - rawData[i][j + 4]) + 27 * (rawData[i][j - 3] - rawData[i][j + 3]) - 48 * (rawData[i][j - 2] - rawData[i][j + 2]) + 42 * (rawData[i][j - 1] - rawData[i][j + 1]));
             }
 
 #ifdef _OPENMP
+#if !defined(_MSC_VER) || _MSC_VER>1920
             #pragma omp simd
+#endif
 #endif
             for (int j = 4; j < W - 4; j++) {
                 const float avgL = ((temp[j - 4] + temp[j - 3]) + (temp[j - 2] + temp[j - 1]) + (temp[j] + temp[j + 1]) + (temp[j + 2] + temp[j + 3]) + temp[j + 4]) / 9.f;
